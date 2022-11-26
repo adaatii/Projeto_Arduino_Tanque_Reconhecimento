@@ -12,8 +12,8 @@ const int echoPin = 18;
 long duration;
 float distanceCm;
 
-const char * ssid = "VIVOFIBRA-391C";
-const char * password = "33d76e391c";
+const char *ssid = "VIVOFIBRA-391C";
+const char *password = "33d76e391c";
 
 void concatenar(char s1[], char s2[]) {
   int i, j;
@@ -21,8 +21,9 @@ void concatenar(char s1[], char s2[]) {
   // Olha que laço for maroto!!!
   // Com ele eu vou pegar o tamanho da primeira string...
   // descomente o `printf` para ver o tamnho da primeira string.
-  for (i = 1; s1[i] != '\0'; ++i);
-  //Serial.printf("%d \n", i);
+  for (i = 1; s1[i] != '\0'; ++i)
+    ;
+  // Serial.printf("%d \n", i);
 
   for (j = 1; s2[j] != '\0'; ++j, ++i) {
     s1[i] = s2[j];
@@ -41,7 +42,7 @@ void setup() {
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    //Serial.print(".");
+    // Serial.print(".");
   }
   // Serial.println(WiFi.localIP());
   // Serial.println(WiFi.macAddress());
@@ -51,7 +52,7 @@ void loop() {
 
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
-    int dado = 35; // coletar o dado na variavel intermediaria
+    int dado = 35;           // coletar o dado na variavel intermediaria
     String url = arquivoPHP; //? = construindo url trasmissão via GET para o
     // servidor, v = variavel;
     // char *trilha = "";
@@ -65,10 +66,25 @@ void loop() {
       // Serial.print("HTTP Response code: ");
       // Serial.println(httpResponseCode);
       String var = http.getString();
-      
+
       comando = var.length();
-      Serial.println(comando);
-    
+
+      for(int i = 0; i < 10; i++){
+        if (comando < 10) Serial.println(comando); 
+        else {
+          switch (comando) {
+            case 10: Serial.println('A'); break;
+            case 11: Serial.println('B'); break;
+            case 12: Serial.println('C'); break;
+            case 13: Serial.println('D'); break;
+            case 14: Serial.println('E'); break;
+            default: Serial.println(0);
+          }
+        }
+        delay(500);
+      }
+
+     
     }
     // else {
     // Serial.print("Erros code: ");
@@ -78,7 +94,6 @@ void loop() {
 
     // strcmp(trilha, "");
 
-    
     // Clears the trigPin
     digitalWrite(trigPin, LOW);
     delayMicroseconds(2);
