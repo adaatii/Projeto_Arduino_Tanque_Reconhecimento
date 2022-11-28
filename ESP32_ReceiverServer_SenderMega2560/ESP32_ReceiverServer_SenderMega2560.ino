@@ -12,8 +12,8 @@ const int echoPin = 18;
 long duration;
 float distanceCm;
 
-const char *ssid = "VIVOFIBRA-391C";
-const char *password = "33d76e391c";
+const char *ssid = "";
+const char *password = "";
 
 void concatenar(char s1[], char s2[]) {
   int i, j;
@@ -32,7 +32,9 @@ void concatenar(char s1[], char s2[]) {
 }
 
 // rota
-String arquivoPHP = "https://tankmuitolouco.droanle.repl.co/api/set.php";
+String getCommand = "https://tankmuitolouco.droanle.repl.co/api/set.php";
+String setLog = "https://tankmuitolouco.droanle.repl.co/api/get.php";
+
 void setup() {
   // Inicia a porta Serial
   Serial.begin(115200);
@@ -52,13 +54,11 @@ void loop() {
 
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
-    int dado = 35;           // coletar o dado na variavel intermediaria
-    String url = arquivoPHP; //? = construindo url trasmissão via GET para o
-    // servidor, v = variavel;
-    // char *trilha = "";
+    
     int comando = 0;
+    bool send = false;
 
-    http.begin(url);
+    http.begin(getCommand);
 
     int httpResponseCode = http.GET();
 
@@ -69,22 +69,37 @@ void loop() {
 
       comando = var.length();
 
-      for(int i = 0; i < 10; i++){
-        if (comando < 10) Serial.println(comando); 
-        else {
-          switch (comando) {
-            case 10: Serial.println('A'); break;
-            case 11: Serial.println('B'); break;
-            case 12: Serial.println('C'); break;
-            case 13: Serial.println('D'); break;
-            case 14: Serial.println('E'); break;
-            default: Serial.println(0);
+      if (comando != 15) {
+        for (int i = 0; i < 10; i++) {
+          if (comando < 10)
+            Serial.println(comando);
+          else {
+            switch (comando) {
+            case 10:
+              Serial.println('A');
+              break;
+            case 11:
+              Serial.println('B');
+              break;
+            case 12:
+              Serial.println('C');
+              break;
+            case 13:
+              Serial.println('D');
+              break;
+            case 14:
+              Serial.println('E');
+              break;
+            default:
+              Serial.println(0);
+            }
           }
+          delay(500);
         }
-        delay(500);
+      } else {
+        Serial.println(0);
+        send = true;
       }
-
-     
     }
     // else {
     // Serial.print("Erros code: ");
@@ -92,26 +107,46 @@ void loop() {
     // }
     http.end();
 
-    // strcmp(trilha, "");
+    if (send) {
 
-    // Clears the trigPin
-    digitalWrite(trigPin, LOW);
-    delayMicroseconds(2);
-    // Sets the trigPin on HIGH state for 10 micro seconds
-    digitalWrite(trigPin, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(trigPin, LOW);
+      // strcmp(trilha, "");
 
-    // Reads the echoPin, returns the sound wave travel time in microseconds
-    duration = pulseIn(echoPin, HIGH);
+      // Clears the trigPin
+      digitalWrite(trigPin, LOW);
+      delayMicroseconds(2);
+      // Sets the trigPin on HIGH state for 10 micro seconds
+      digitalWrite(trigPin, HIGH);
+      delayMicroseconds(10);
+      digitalWrite(trigPin, LOW);
 
-    // Calculate the distance
-    distanceCm = duration * SOUND_SPEED / 2;
+      // Reads the echoPin, returns the sound wave travel time in microseconds
+      duration = pulseIn(echoPin, HIGH);
 
-    // Prints the distance in the Serial Monitor
-    // Serial.print("Distance (cm): ");
-    // Serial.println(distanceCm);
+      // Calculate the distance
+      distanceCm = duration * SOUND_SPEED / 2;
+
+      // Prints the distance in the Serial Monitor
+      // Serial.print("Distance (cm): ");
+      // Serial.println(distanceCm);
+
+      do {
+        bool sent = false;
+
+        http.begin(setLog);
+
+        int httpResponseCode = http.GET();
+
+        if (httpResponseCode > 0) sent = true;
+
+        http.end();
+        
+      } while (!sent)
+      // servidor, v = variavel;
+      // char *trilha = "";
+    }
 
     delay(500);
+    Serial.println('0');
+    delay(10000);
   }
 }
