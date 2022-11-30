@@ -1,3 +1,4 @@
+
 #include <HTTPClient.h>
 #include <WiFi.h>
 #include <stdio.h>
@@ -12,8 +13,8 @@ const int echoPin = 18;
 long duration;
 float distanceCm;
 
-const char *ssid = "";
-const char *password = "";
+const char *ssid = "VIVOFIBRA-391C";
+const char *password = "33d76e391c";
 
 void concatenar(char s1[], char s2[]) {
   int i, j;
@@ -54,8 +55,9 @@ void loop() {
 
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
-    
+
     int comando = 0;
+    int loop = 0;
     bool send = false;
 
     http.begin(getCommand);
@@ -70,7 +72,31 @@ void loop() {
       comando = var.length();
 
       if (comando != 15) {
-        for (int i = 0; i < 10; i++) {
+        if (comando < 10)
+          loop = 5;
+        else {
+          switch (comando) {
+          case 10:
+            loop = 5;
+            break;
+          case 11:
+            loop = 2;
+            break;
+          case 12:
+            loop = 2;
+            break;
+          case 13:
+            loop = 8;
+            break;
+          case 14:
+            loop = 8;
+            break;
+          default:
+            loop = 1;
+          }
+        }
+
+        for (int i = 0; i < loop; i++) {
           if (comando < 10)
             Serial.println(comando);
           else {
@@ -128,19 +154,21 @@ void loop() {
       // Prints the distance in the Serial Monitor
       // Serial.print("Distance (cm): ");
       // Serial.println(distanceCm);
-
+      
+      bool sent = false;
+      
       do {
-        bool sent = false;
 
         http.begin(setLog);
 
         int httpResponseCode = http.GET();
 
-        if (httpResponseCode > 0) sent = true;
+        if (httpResponseCode > 0)
+          sent = true;
 
         http.end();
-        
-      } while (!sent)
+
+      } while (!sent);
       // servidor, v = variavel;
       // char *trilha = "";
     }
