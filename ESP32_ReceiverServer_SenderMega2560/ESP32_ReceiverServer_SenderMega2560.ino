@@ -13,8 +13,8 @@ const int echoPin = 18;
 long duration;
 float distanceCm;
 
-const char *ssid = "VIVOFIBRA-391C";
-const char *password = "33d76e391c";
+const char *ssid = "Redmi Note 8 Pro";
+const char *password = "asdfghjkl";
 
 void concatenar(char s1[], char s2[]) {
   int i, j;
@@ -86,10 +86,10 @@ void loop() {
             loop = 2;
             break;
           case 13:
-            loop = 8;
+            loop = 1;
             break;
           case 14:
-            loop = 8;
+            loop = 1;
             break;
           default:
             loop = 1;
@@ -153,13 +153,13 @@ void loop() {
 
       // Prints the distance in the Serial Monitor
       // Serial.print("Distance (cm): ");
-      // Serial.println(distanceCm);
+       Serial.println(distanceCm);
       
       bool sent = false;
       
       do {
 
-        http.begin(setLog);
+        http.begin(setLog + "?data/" + distanceCm);
 
         int httpResponseCode = http.GET();
 
@@ -175,6 +175,6 @@ void loop() {
 
     delay(500);
     Serial.println('0');
-    delay(10000);
+    delay(2000);
   }
 }

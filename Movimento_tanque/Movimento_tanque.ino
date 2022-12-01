@@ -99,7 +99,7 @@ void loop() {
   }
  
     else if (state == 'D') { // Se o estado recebido for igual a 'I', o carro se movimenta para Esquerda.
-    analogWrite(motorA1, vSpeed);
+    analogWrite(motorA1, 250);
     analogWrite(motorA2, 0);
     analogWrite(motorB1, 0);
     analogWrite(motorB2, vSpeed); 
